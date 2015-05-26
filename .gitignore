@@ -4,13 +4,10 @@
 /.idea/libraries
 .DS_Store
 /build
-
-.idea/gradle.xml
-
+.idea/
 app/app.iml
+*.iml
 
-Noice.iml
-
+# keys
 app/src/main/res/values/api_keys.xml
-
 keys/*
