@@ -1,6 +1,6 @@
 # Noice for Android
 
-Welcome to the source code for the Android Noie project.  I think you'll find it pretty Noice :D
+Welcome to the source code for the Android Noice project.  I think you'll find it pretty Noice :D
 
 ![image alt][1]
 
