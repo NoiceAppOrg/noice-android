@@ -1,0 +1,117 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainFragment">
+
+    <fragment
+        android:id="@+id/main_video_view"
+        android:name="com.noice.noice.view.VideoPlayerFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".35"
+        tools:layout="@layout/fragment_video_player" />
+
+    <RelativeLayout
+        android:id="@+id/main_content_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".65"
+        android:paddingBottom="32dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp"
+        android:paddingTop="16dp">
+
+        <TextView
+            android:id="@+id/main_title_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:textColor="@color/black"
+            android:textSize="22sp"
+            tools:text="Rammity Ram Ram rammerson." />
+
+        <ScrollView
+            android:id="@+id/main_description_sv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/main_positive_count"
+            android:layout_below="@+id/main_title_tv"
+            android:layout_marginBottom="8dp"
+            android:scrollbars="none">
+
+            <TextView
+                android:id="@+id/main_description_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/main_title_tv"
+                android:layout_marginBottom="16dp"
+                tools:text="It means you're hatred, and it also means losing someone, who I've cared for since I first heard his cried echoing through this house.  But it might also mean saving your life.  And that is more important.\n\nNo guns, no killing." />
+
+        </ScrollView>
+
+
+        <TextView
+            android:id="@+id/main_positive_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/main_positive_button"
+            android:layout_marginBottom="16dp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            tools:text="42 haha'd" />
+
+        <TextView
+            android:id="@+id/main_negative_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/main_positive_button"
+            android:layout_alignLeft="@+id/main_negative_button"
+            android:layout_marginBottom="16dp"
+            android:textStyle="bold"
+            tools:text="4 meh'd" />
+
+        <TextView
+            android:id="@+id/main_blab_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/main_positive_button"
+            android:layout_alignLeft="@+id/main_share_button"
+            android:layout_marginBottom="16dp"
+            android:textStyle="bold"
+            tools:text="22 blab's"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <ImageButton
+            android:id="@+id/main_positive_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/ic_haha_unselected" />
+
+        <ImageButton
+            android:id="@+id/main_negative_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@+id/main_positive_button"
+            android:background="@drawable/ic_meh_unselected" />
+
+        <ImageButton
+            android:id="@+id/main_share_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/ic_blab_unselected"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+
+    </RelativeLayout>
+
+</LinearLayout>

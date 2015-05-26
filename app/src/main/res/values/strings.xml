@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Noice</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="you_havent_shared">You haven\'t shared this yet, you should</string>
+    <string name="you_shared">Yay, you just shared this! Thanks.</string>
+    <plurals name="haha_count">
+        <item quantity="one">%d haha</item>
+        <item quantity="other">%d haha\'d</item>
+    </plurals>
+    <plurals name="meh_count">
+        <item quantity="one">%d meh</item>
+        <item quantity="other">%d meh\'d</item>
+    </plurals>
+    <plurals name="share_count">
+        <item quantity="one">%d blab</item>
+        <item quantity="other">%d blab\'s</item>
+    </plurals>
+    <string name="check_out_this_video">Check out this video I found on Noice! %1$s\n\nDownload Noice for Android (https://play.google.com/store/apps/details?id=com.noice.noice)</string>
+    <string name="someone_shared">Someone shared a video with you on Noice</string>
+
+</resources>
