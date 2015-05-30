@@ -5,8 +5,8 @@
     <string name="you_havent_shared">You haven\'t shared this yet, you should</string>
     <string name="you_shared">Yay, you just shared this! Thanks.</string>
     <plurals name="haha_count">
-        <item quantity="one">%d haha</item>
-        <item quantity="other">%d haha\'d</item>
+        <item quantity="one">%d noice</item>
+        <item quantity="other">%d noice\'d</item>
     </plurals>
     <plurals name="meh_count">
         <item quantity="one">%d meh</item>
