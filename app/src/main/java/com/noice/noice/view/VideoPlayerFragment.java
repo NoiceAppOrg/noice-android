@@ -7,11 +7,15 @@ import android.util.Log;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
+import com.noice.noice.metrics.TrackerConstants;
 import com.noice.noice.model.Video;
 import com.noice.noice.util.KeyHelper;
 import com.noice.noice.util.URIHelper;
+import com.parse.ParseAnalytics;
 
-public class VideoPlayerFragment extends YouTubePlayerSupportFragment implements YouTubePlayer.OnInitializedListener {
+public class VideoPlayerFragment extends YouTubePlayerSupportFragment implements YouTubePlayer
+        .OnInitializedListener, YouTubePlayer.PlaybackEventListener, YouTubePlayer
+        .PlayerStateChangeListener {
 
     private static final String TAG = "VideoPlayerFragment";
 
@@ -25,7 +29,8 @@ public class VideoPlayerFragment extends YouTubePlayerSupportFragment implements
     }
 
     /**
-     * Set data for the video that we will be playing. Attempts to parse the YouTube video id from the video's uri
+     * Set data for the video that we will be playing. Attempts to parse the YouTube video id
+     * from the video's uri
      *
      * @param video
      */
@@ -49,15 +54,74 @@ public class VideoPlayerFragment extends YouTubePlayerSupportFragment implements
     }
 
     @Override
-    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean wasRestored) {
+    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player,
+                                        boolean wasRestored) {
         if (!wasRestored) {
             youTubePlayer = player;
+            youTubePlayer.setPlaybackEventListener(this);
+            youTubePlayer.setPlayerStateChangeListener(this);
             startVideo();
         }
     }
 
     @Override
-    public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+    public void onInitializationFailure(YouTubePlayer.Provider provider,
+                                        YouTubeInitializationResult youTubeInitializationResult) {
+        // do nothing
+    }
+
+    @Override
+    public void onPlaying() {
+        ParseAnalytics.trackEventInBackground(TrackerConstants.PLAY_ACTION);
+    }
+
+    @Override
+    public void onPaused() {
+        ParseAnalytics.trackEventInBackground(TrackerConstants.PAUSE_ACTION);
+    }
+
+    @Override
+    public void onStopped() {
+        // do nothing
+    }
+
+    @Override
+    public void onBuffering(boolean b) {
+        // do nothing
+    }
+
+    @Override
+    public void onSeekTo(int i) {
+        // do nothing
+    }
+
+    @Override
+    public void onLoading() {
+        // do nothing
+    }
+
+    @Override
+    public void onLoaded(String s) {
+        // do nothing
+    }
+
+    @Override
+    public void onAdStarted() {
+        // do nothing
+    }
+
+    @Override
+    public void onVideoStarted() {
+        // do nothing
+    }
+
+    @Override
+    public void onVideoEnded() {
+        ParseAnalytics.trackEventInBackground(TrackerConstants.VIDEO_ENDED);
+    }
+
+    @Override
+    public void onError(YouTubePlayer.ErrorReason errorReason) {
         // do nothing
     }
 }
