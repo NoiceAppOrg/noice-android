@@ -17,8 +17,8 @@
         android:id="@+id/main_content_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight=".65"
-        android:paddingBottom="32dp"
+        android:layout_weight=".55"
+        android:paddingBottom="8dp"
         android:paddingLeft="32dp"
         android:paddingRight="32dp"
         android:paddingTop="16dp">
@@ -80,8 +80,8 @@
             android:layout_alignLeft="@+id/main_share_button"
             android:layout_marginBottom="16dp"
             android:textStyle="bold"
-            tools:text="22 blab's"
             android:visibility="gone"
+            tools:text="22 blab's"
             tools:visibility="visible" />
 
         <ImageButton
@@ -111,6 +111,21 @@
             android:visibility="gone"
             tools:visibility="visible" />
 
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".10">
+
+        <Button
+            android:id="@+id/main_watch_another_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/watch_another_selector"
+            android:text="@string/watch_another" />
 
     </RelativeLayout>
 

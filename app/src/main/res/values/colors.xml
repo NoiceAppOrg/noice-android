@@ -13,5 +13,9 @@
     <item name="darkred" type="color">#FFCC0000</item>
     <item name="black" type="color">#000</item>
 
+    <item name="colorPrimary" type="color">#505F90</item>
+    <item name="colorPrimaryDark" type="color">#FAD46B</item>
+    <item name="colorAccent" type="color">#FAD46B</item>
+    <item name="colorAccentDark" type="color">#bfa252</item>
 
 </resources>

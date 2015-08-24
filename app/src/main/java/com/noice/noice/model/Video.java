@@ -6,6 +6,10 @@ import com.parse.ParseObject;
 @ParseClassName("Video")
 public class Video extends ParseObject {
 
+    public int getIndex() {
+        return (int) get("index");
+    }
+
     public String getUri() {
         return (String) get("url");
     }

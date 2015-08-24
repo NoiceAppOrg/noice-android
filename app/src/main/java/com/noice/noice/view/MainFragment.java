@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,7 +24,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 
-public class MainFragment extends Fragment implements VoteDAO.VoteListener, VideoDAO.VideoListener, ShareDAO.ShareListener {
+public class MainFragment extends Fragment implements VoteDAO.VoteListener, VideoDAO
+        .VideoListener, ShareDAO.ShareListener {
 
     private static final int SHARE_RESULT_CODE = 101;
 
@@ -45,6 +47,8 @@ public class MainFragment extends Fragment implements VoteDAO.VoteListener, Vide
     ImageButton negativeButton;
     @InjectView(R.id.main_share_button)
     ImageButton shareButton;
+    @InjectView(R.id.main_watch_another_button)
+    Button watchAnotherButton;
 
     // video player fragment
     VideoPlayerFragment videoPlayerFragment;
@@ -62,14 +66,15 @@ public class MainFragment extends Fragment implements VoteDAO.VoteListener, Vide
     private int mPositiveVoteCount = 0;
     private int mNegativeVoteCount = 0;
     private int mShareCount = 0;
+    private boolean isVideoLoading = false;
+
+    public MainFragment() {
+        // Required empty public constructor
+    }
 
     public static MainFragment newInstance() {
         MainFragment fragment = new MainFragment();
         return fragment;
-    }
-
-    public MainFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -85,6 +90,7 @@ public class MainFragment extends Fragment implements VoteDAO.VoteListener, Vide
         super.onResume();
         // query for most recent video
         mVideoDAO.getMostRecentInBackground();
+        isVideoLoading = true;
     }
 
     @Override
@@ -115,7 +121,8 @@ public class MainFragment extends Fragment implements VoteDAO.VoteListener, Vide
     }
 
     private void initViews() {
-        videoPlayerFragment = (VideoPlayerFragment) getChildFragmentManager().findFragmentById(R.id.main_video_view);
+        videoPlayerFragment = (VideoPlayerFragment) getChildFragmentManager().findFragmentById(R
+                .id.main_video_view);
         positiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,6 +139,15 @@ public class MainFragment extends Fragment implements VoteDAO.VoteListener, Vide
             @Override
             public void onClick(View v) {
                 shareLink(mVideo);
+            }
+        });
+        watchAnotherButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isVideoLoading) {
+                    mVideoDAO.getRandomInBackground();
+                    isVideoLoading = true;
+                }
             }
         });
     }
@@ -166,12 +182,14 @@ public class MainFragment extends Fragment implements VoteDAO.VoteListener, Vide
     private void updateShareState() {
         if (hasShared) {
             shareButton.setBackgroundResource(R.drawable.ic_blab_selected);
-            shareCountTextView.setTextColor(getResources().getColor(R.color.material_deep_teal_500));
+            shareCountTextView.setTextColor(getResources().getColor(R.color
+                    .material_deep_teal_500));
         } else {
             shareButton.setBackgroundResource(R.drawable.ic_blab_unselected);
             shareCountTextView.setTextColor(getResources().getColor(R.color.black));
         }
-        shareCountTextView.setText(getResources().getQuantityString(R.plurals.share_count, mShareCount, mShareCount));
+        shareCountTextView.setText(getResources().getQuantityString(R.plurals.share_count,
+                mShareCount, mShareCount));
     }
 
     private void updateLikeState() {
@@ -201,8 +219,10 @@ public class MainFragment extends Fragment implements VoteDAO.VoteListener, Vide
     }
 
     private void updateVoteCountViews() {
-        positiveCountTextView.setText(getResources().getQuantityString(R.plurals.haha_count, mPositiveVoteCount, mPositiveVoteCount));
-        negativeCountTextView.setText(getResources().getQuantityString(R.plurals.meh_count, mNegativeVoteCount, mNegativeVoteCount));
+        positiveCountTextView.setText(getResources().getQuantityString(R.plurals.haha_count,
+                mPositiveVoteCount, mPositiveVoteCount));
+        negativeCountTextView.setText(getResources().getQuantityString(R.plurals.meh_count,
+                mNegativeVoteCount, mNegativeVoteCount));
     }
 
     private void shareLink(Video video) {
@@ -216,7 +236,8 @@ public class MainFragment extends Fragment implements VoteDAO.VoteListener, Vide
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.someone_shared));
-        sendIntent.putExtra(Intent.EXTRA_TEXT, String.format(getResources().getString(R.string.check_out_this_video), video.getUri()));
+        sendIntent.putExtra(Intent.EXTRA_TEXT, String.format(getResources().getString(R.string
+                .check_out_this_video), video.getUri()));
         sendIntent.setType("text/plain");
         startActivityForResult(sendIntent, SHARE_RESULT_CODE);
 
@@ -253,6 +274,7 @@ public class MainFragment extends Fragment implements VoteDAO.VoteListener, Vide
 
     @Override
     public void onVideoReceived(Video video) {
+        isVideoLoading = false;
         mVideo = video;
         updateViews();
         mVoteDAO.updateVoteCounts(mVideo);

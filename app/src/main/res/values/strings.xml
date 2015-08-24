@@ -18,5 +18,6 @@
     </plurals>
     <string name="check_out_this_video">Check out this video I found on Noice! %1$s\n\nDownload Noice for Android https://play.google.com/store/apps/details?id=com.noice.noice</string>
     <string name="someone_shared">Someone shared a video with you on Noice</string>
+    <string name="watch_another">Watch Another</string>
 
 </resources>
