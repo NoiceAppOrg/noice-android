@@ -35,49 +35,24 @@ public class VideoViewModel implements VoteDAO.VoteListener, VideoDAO
         return mVideo;
     }
 
-    public void setVideo(Video video) {
-        mVideo = video;
-    }
-
     public int getUserVote() {
         return userVote;
-    }
-
-    public void setUserVote(int userVote) {
-        this.userVote = userVote;
     }
 
     public boolean hasShared() {
         return hasShared;
     }
 
-    public void setShared(boolean hasShared) {
-        this.hasShared = hasShared;
-        mShareDAO.updateOrCreateShare(mVideo);
-    }
-
     public int getPositiveVoteCount() {
         return mPositiveVoteCount;
-    }
-
-    public void setPositiveVoteCount(int positiveVoteCount) {
-        mPositiveVoteCount = positiveVoteCount;
     }
 
     public int getNegativeVoteCount() {
         return mNegativeVoteCount;
     }
 
-    public void setNegativeVoteCount(int negativeVoteCount) {
-        mNegativeVoteCount = negativeVoteCount;
-    }
-
     public int getShareCount() {
         return mShareCount;
-    }
-
-    public void setShareCount(int shareCount) {
-        mShareCount = shareCount;
     }
 
     public void addListener(VideoViewModelListener listener) {
@@ -95,13 +70,13 @@ public class VideoViewModel implements VoteDAO.VoteListener, VideoDAO
     }
 
     public void getTodaysVideo() {
-        userVote = Vote.VOTE_NONE;
+        resetUserState();
         mVideoDAO.getMostRecentInBackground();
         setLoading();
     }
 
     public void getRandomVideo() {
-        userVote = Vote.VOTE_NONE;
+        resetUserState();
         mVideoDAO.getRandomInBackground();
         setLoading();
     }
@@ -122,10 +97,19 @@ public class VideoViewModel implements VoteDAO.VoteListener, VideoDAO
         }
     }
 
+    public void share() {
+        mShareDAO.updateOrCreateShare(mVideo);
+    }
+
     private void notifyListenerIfDoneLoading() {
         if (isLoaded()) {
             listener.onVideoLoaded(this);
         }
+    }
+
+    private void resetUserState() {
+        userVote = Vote.VOTE_NONE;
+        hasShared = false;
     }
 
     private void setLoading() {

@@ -44,6 +44,8 @@ public class MainFragment extends Fragment implements VideoViewModel.VideoViewMo
     ImageButton negativeButton;
     @InjectView(R.id.main_share_button)
     ImageButton shareButton;
+    @InjectView(R.id.main_watch_another_layout)
+    RelativeLayout watchAnotherLayout;
     @InjectView(R.id.main_watch_another_button)
     Button watchAnotherButton;
 
@@ -89,8 +91,10 @@ public class MainFragment extends Fragment implements VideoViewModel.VideoViewMo
         super.onConfigurationChanged(newConfig);
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             mContentLayout.setVisibility(View.GONE);
+            watchAnotherLayout.setVisibility(View.GONE);
         } else {
             mContentLayout.setVisibility(View.VISIBLE);
+            watchAnotherLayout.setVisibility(View.VISIBLE);
         }
     }
 
@@ -213,7 +217,7 @@ public class MainFragment extends Fragment implements VideoViewModel.VideoViewMo
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SHARE_RESULT_CODE) {
-            mVideoViewModel.setShared(true);
+            mVideoViewModel.share();
         }
     }
 
