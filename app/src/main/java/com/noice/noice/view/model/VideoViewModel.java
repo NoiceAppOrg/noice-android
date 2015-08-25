@@ -139,7 +139,6 @@ public class VideoViewModel implements VoteDAO.VoteListener, VideoDAO
     @Override
     public void onUserVoteCast() {
         mVoteDAO.updateVoteCounts(mVideo);
-        notifyListenerIfDoneLoading();
     }
 
     @Override

@@ -1,10 +1,12 @@
 package com.noice.noice.dao;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.noice.noice.model.Video;
 import com.noice.noice.model.Vote;
-import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseACL;
 import com.parse.ParseException;
@@ -15,6 +17,9 @@ import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import bolts.Continuation;
+import bolts.Task;
 
 public class VoteDAO {
 
@@ -83,40 +88,49 @@ public class VoteDAO {
      *
      * @param video video that we are getting votes for
      */
-    public void updateVoteCounts(final Video video) {
+    public void updateVoteCounts(@NonNull Video video) {
+        ArrayList<Task<Integer>> tasks = new ArrayList<>();
+        tasks.add(createVoteTaskForValue(video, 1));
+        tasks.add(createVoteTaskForValue(video, -1));
+        Task.whenAllResult(tasks).onSuccess(new Continuation<List<Integer>, Object>() {
+            @Override
+            public Object then(final Task<List<Integer>> task) throws Exception {
+                for (final VoteListener listener : listeners) {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            listener.onVoteCountsUpdated(task.getResult().get(0), task.getResult
+                                    ().get(1));
+                        }
+                    });
+                }
+                return null;
+            }
+        });
+
+        // get user vote
         ParseQuery<Vote> query = ParseQuery.getQuery(Vote.class);
         query.whereEqualTo("video", video);
-        query.findInBackground(new FindCallback<Vote>() {
+        query.whereEqualTo("user", ParseInstallation.getCurrentInstallation());
+        query.getFirstInBackground(new GetCallback<Vote>() {
             @Override
-            public void done(List<Vote> votes, ParseException e) {
-                // something went wrong
+            public void done(Vote vote, ParseException e) {
                 if (e != null) {
                     return;
                 }
-
-                int positive = 0;
-                int negative = 0;
-                for (Vote vote : votes) {
-                    // update user vote
-                    if (ParseInstallation.getCurrentInstallation().hasSameId(vote.getInstallation
-                            ())) {
-                        for (VoteListener listener : listeners) {
-                            listener.onUserVoteUpdated(vote);
-                        }
-                    }
-
-                    // update vote vote counts
-                    if (vote.isPositive()) {
-                        positive++;
-                    } else if (vote.isNegative()) {
-                        negative++;
-                    }
-                }
                 for (VoteListener listener : listeners) {
-                    listener.onVoteCountsUpdated(positive, negative);
+                    listener.onUserVoteUpdated(vote);
                 }
+
             }
         });
+    }
+
+    private Task<Integer> createVoteTaskForValue(Video video, int value) {
+        ParseQuery<Vote> query = ParseQuery.getQuery(Vote.class);
+        query.whereEqualTo("video", video);
+        query.whereEqualTo("value", value);
+        return query.countInBackground();
     }
 
     private ParseACL createVoteACL() {
