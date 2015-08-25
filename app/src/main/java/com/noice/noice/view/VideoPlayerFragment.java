@@ -21,11 +21,16 @@ public class VideoPlayerFragment extends YouTubePlayerSupportFragment implements
 
     private String youTubeVideoId;
     private YouTubePlayer youTubePlayer;
+    private Video mVideo;
 
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         initialize(KeyHelper.getYouTubePlayerKey(getActivity()), this);
+    }
+
+    public Video getVideo() {
+        return mVideo;
     }
 
     /**
@@ -36,6 +41,7 @@ public class VideoPlayerFragment extends YouTubePlayerSupportFragment implements
      */
     public void setVideo(Video video) {
         if (video != null) {
+            mVideo = video;
             try {
                 youTubeVideoId = URIHelper.extractYoutubeId(video.getUri());
             } catch (Exception e) {
