@@ -8,11 +8,9 @@ import android.support.annotation.Nullable;
 import com.noice.noice.model.Video;
 import com.noice.noice.model.Vote;
 import com.parse.GetCallback;
-import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.ArrayList;
@@ -70,7 +68,7 @@ public class VoteDAO {
                     vote.setVideo(video);
                 }
                 vote.setValue(value);
-                vote.setACL(createVoteACL());
+                vote.setACL(Vote.createVoteACL());
                 vote.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
@@ -133,11 +131,4 @@ public class VoteDAO {
         return query.countInBackground();
     }
 
-    private ParseACL createVoteACL() {
-        ParseACL parseACL = new ParseACL();
-        parseACL.setPublicWriteAccess(false);
-        parseACL.setPublicReadAccess(true);
-        parseACL.setWriteAccess(ParseUser.getCurrentUser(), true);
-        return parseACL;
-    }
 }

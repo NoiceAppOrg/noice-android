@@ -4,11 +4,9 @@ import com.noice.noice.model.Share;
 import com.noice.noice.model.Video;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
-import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +48,7 @@ public class ShareDAO {
                     share = new Share();
                     share.setCurrentInstallation();
                     share.setVideo(video);
-                    share.setACL(createShareACL());
+                    share.setACL(Share.createShareACL());
                     share.saveInBackground();
                     for (ShareListener listener : listeners) {
                         listener.onUserHasShared();
@@ -87,14 +85,6 @@ public class ShareDAO {
                 }
             }
         });
-    }
-
-    private ParseACL createShareACL() {
-        ParseACL parseACL = new ParseACL();
-        parseACL.setPublicWriteAccess(false);
-        parseACL.setPublicReadAccess(true);
-        parseACL.setWriteAccess(ParseUser.getCurrentUser(), true);
-        return parseACL;
     }
 
 }
