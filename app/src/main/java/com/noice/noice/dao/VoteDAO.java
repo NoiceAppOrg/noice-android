@@ -25,20 +25,12 @@ public class VoteDAO {
         void onVoteCountsUpdated(int positiveCount, int negativeCount);
     }
 
-    // Listeners to notify when the set changes.
     private List<VoteListener> listeners = new ArrayList<>();
 
-
-    /**
-     * Adds a listener to be notified when the set of favorites changes.
-     */
     public void addListener(VoteListener listener) {
         listeners.add(listener);
     }
 
-    /**
-     * Removes a listener.
-     */
     public void removeListener(VoteListener listener) {
         listeners.remove(listener);
     }
@@ -82,15 +74,10 @@ public class VoteDAO {
      *
      * @param video video that we are getting votes for
      */
-    public void updateVoteCounts(@NonNull Video video) {
+    public void getVoteCountsForVideo(@NonNull Video video) {
         new GetVoteCountsTask(video, listeners).execute();
     }
 
-    /**
-     * Get the user's vote for a video if one exists
-     *
-     * @param video video that the user may have voted on
-     */
     public void getUserVoteForVideo(@NonNull Video video) {
         ParseQuery<Vote> query = ParseQuery.getQuery(Vote.class);
         query.whereEqualTo("video", video);
@@ -108,7 +95,7 @@ public class VoteDAO {
         });
     }
 
-    private int countVotesForValue(Video video, int value) {
+    private int countVotesForValue(@NonNull Video video, int value) {
         ParseQuery<Vote> query = ParseQuery.getQuery(Vote.class);
         query.whereEqualTo("video", video);
         query.whereEqualTo("value", value);

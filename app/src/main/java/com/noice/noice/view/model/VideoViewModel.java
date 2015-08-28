@@ -175,9 +175,10 @@ public class VideoViewModel implements VoteDAO.VoteListener, VideoDAO
     @Override
     public void onVideoReceived(Video video) {
         mVideo = video;
-        mVoteDAO.updateVoteCounts(mVideo);
+        mVoteDAO.getVoteCountsForVideo(mVideo);
         mVoteDAO.getUserVoteForVideo(mVideo);
-        mShareDAO.updateShareCount(mVideo);
+        mShareDAO.getShareCount(mVideo);
+        mShareDAO.getUserShareState(mVideo);
         isVideoLoaded = true;
     }
 

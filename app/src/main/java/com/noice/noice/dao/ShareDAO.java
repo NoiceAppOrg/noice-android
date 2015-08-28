@@ -1,8 +1,10 @@
 package com.noice.noice.dao;
 
+import android.support.annotation.NonNull;
+
 import com.noice.noice.model.Share;
 import com.noice.noice.model.Video;
-import com.parse.FindCallback;
+import com.parse.CountCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
@@ -19,25 +21,17 @@ public class ShareDAO {
         void onShareCountUpdated(int count);
     }
 
-    // Listeners to notify when the set changes.
     private List<ShareListener> listeners = new ArrayList<>();
-
-    /**
-     * Adds a listener to be notified when the set of favorites changes.
-     */
 
     public void addListener(ShareListener listener) {
         listeners.add(listener);
     }
 
-    /**
-     * Removes a listener.
-     */
     public void removeListener(ShareListener listener) {
         listeners.remove(listener);
     }
 
-    public void updateOrCreateShare(final Video video) {
+    public void updateOrCreateShare(@NonNull final Video video) {
         ParseQuery<Share> query = ParseQuery.getQuery(Share.class);
         query.whereEqualTo("user", ParseInstallation.getCurrentInstallation());
         query.whereEqualTo("video", video);
@@ -56,29 +50,31 @@ public class ShareDAO {
     }
 
 
-    public void updateShareCount(final Video video) {
+    public void getShareCount(@NonNull final Video video) {
         ParseQuery<Share> query = ParseQuery.getQuery(Share.class);
         query.whereEqualTo("video", video);
-        query.findInBackground(new FindCallback<Share>() {
+        query.countInBackground(new CountCallback() {
             @Override
-            public void done(List<Share> shares, ParseException e) {
-                // something went wrong
+            public void done(int i, ParseException e) {
+                for (ShareListener listener : listeners) {
+                    listener.onShareCountUpdated(i);
+                }
+            }
+        });
+    }
+
+    public void getUserShareState(@NonNull final Video video) {
+        ParseQuery<Share> query = ParseQuery.getQuery(Share.class);
+        query.whereEqualTo("video", video);
+        query.whereEqualTo("user", ParseInstallation.getCurrentInstallation());
+        query.getFirstInBackground(new GetCallback<Share>() {
+            @Override
+            public void done(Share vote, ParseException e) {
                 if (e != null) {
                     return;
                 }
-
-                for (Share share : shares) {
-                    // update user vote
-                    if (ParseInstallation.getCurrentInstallation().hasSameId(share
-                            .getInstallation())) {
-                        for (ShareListener listener : listeners) {
-                            listener.onUserHasShared();
-                        }
-                    }
-
-                }
                 for (ShareListener listener : listeners) {
-                    listener.onShareCountUpdated(shares.size());
+                    listener.onUserHasShared();
                 }
             }
         });
