@@ -84,8 +84,14 @@ public class VoteDAO {
      */
     public void updateVoteCounts(@NonNull Video video) {
         new GetVoteCountsTask(video, listeners).execute();
+    }
 
-        // get user vote
+    /**
+     * Get the user's vote for a video if one exists
+     *
+     * @param video video that the user may have voted on
+     */
+    public void getUserVoteForVideo(@NonNull Video video) {
         ParseQuery<Vote> query = ParseQuery.getQuery(Vote.class);
         query.whereEqualTo("video", video);
         query.whereEqualTo("user", ParseInstallation.getCurrentInstallation());
@@ -98,7 +104,6 @@ public class VoteDAO {
                 for (VoteListener listener : listeners) {
                     listener.onUserVoteUpdated(vote);
                 }
-
             }
         });
     }
