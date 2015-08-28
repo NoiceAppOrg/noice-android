@@ -55,6 +55,30 @@ public class VideoViewModel implements VoteDAO.VoteListener, VideoDAO
         return mShareCount;
     }
 
+    public boolean isVideoLoaded() {
+        return isVideoLoaded;
+    }
+
+    public void setVideoLoaded(boolean isVideoLoaded) {
+        this.isVideoLoaded = isVideoLoaded;
+    }
+
+    public boolean isVoteLoaded() {
+        return isVoteLoaded;
+    }
+
+    public void setVoteLoaded(boolean isVoteLoaded) {
+        this.isVoteLoaded = isVoteLoaded;
+    }
+
+    public boolean isShareLoaded() {
+        return isShareLoaded;
+    }
+
+    public void setShareLoaded(boolean isShareLoaded) {
+        this.isShareLoaded = isShareLoaded;
+    }
+
     public void addListener(VideoViewModelListener listener) {
         this.listener = listener;
         mVideoDAO.addListener(this);
@@ -72,39 +96,56 @@ public class VideoViewModel implements VoteDAO.VoteListener, VideoDAO
     public void getTodaysVideo() {
         resetUserState();
         mVideoDAO.getMostRecentInBackground();
-        setLoading();
     }
 
     public void getRandomVideo() {
         resetUserState();
         mVideoDAO.getRandomInBackground();
-        setLoading();
     }
 
     public void likeVideo() {
         if (mVideo != null) {
+            updateVoteCountsBasedOnUserVote(userVote, Vote.VOTE_POSITIVE);
             userVote = Vote.VOTE_POSITIVE;
             mVoteDAO.updateOrCreateVote(mVideo, 1);
-            notifyListenerIfDoneLoading();
+            notifyListener();
         }
     }
 
     public void dislikeVideo() {
         if (mVideo != null) {
+            updateVoteCountsBasedOnUserVote(userVote, Vote.VOTE_NEGATIVE);
             userVote = Vote.VOTE_NEGATIVE;
             mVoteDAO.updateOrCreateVote(mVideo, -1);
-            notifyListenerIfDoneLoading();
+            notifyListener();
+        }
+    }
+
+    private void updateVoteCountsBasedOnUserVote(int oldValue, int newValue) {
+        if (oldValue == Vote.VOTE_NEGATIVE) {
+            mNegativeVoteCount--;
+        } else if (oldValue == Vote.VOTE_POSITIVE) {
+            mPositiveVoteCount--;
+        }
+
+        if (newValue == Vote.VOTE_NEGATIVE) {
+            mNegativeVoteCount++;
+        } else if (newValue == Vote.VOTE_POSITIVE) {
+            mPositiveVoteCount++;
         }
     }
 
     public void share() {
         mShareDAO.updateOrCreateShare(mVideo);
+        if (!hasShared) {
+            mShareCount++;
+            hasShared = true;
+        }
+        notifyListener();
     }
 
-    private void notifyListenerIfDoneLoading() {
-        if (isLoaded()) {
-            listener.onVideoLoaded(this);
-        }
+    private void notifyListener() {
+        listener.onVideoLoaded(this);
     }
 
     private void resetUserState() {
@@ -112,33 +153,23 @@ public class VideoViewModel implements VoteDAO.VoteListener, VideoDAO
         hasShared = false;
     }
 
-    private void setLoading() {
-        isVideoLoaded = false;
-        isVoteLoaded = false;
-        isShareLoaded = false;
-    }
-
-    public boolean isLoaded() {
-        return isVideoLoaded && isVoteLoaded && isShareLoaded;
-    }
-
     @Override
     public void onVoteCountsUpdated(int positiveCount, int negativeCount) {
         mPositiveVoteCount = positiveCount;
         mNegativeVoteCount = negativeCount;
         isVoteLoaded = true;
-        notifyListenerIfDoneLoading();
+        notifyListener();
     }
 
     @Override
     public void onUserVoteUpdated(Vote vote) {
         userVote = vote.getValue();
-        notifyListenerIfDoneLoading();
+        notifyListener();
     }
 
     @Override
     public void onUserVoteCast() {
-        mVoteDAO.updateVoteCounts(mVideo);
+        // do nothing
     }
 
     @Override
@@ -151,17 +182,13 @@ public class VideoViewModel implements VoteDAO.VoteListener, VideoDAO
 
     @Override
     public void onUserHasShared() {
-        if (!hasShared) {
-            mShareCount++;
-            hasShared = true;
-        }
-        notifyListenerIfDoneLoading();
+        hasShared = true;
     }
 
     @Override
     public void onShareCountUpdated(int count) {
         mShareCount = count;
         isShareLoaded = true;
-        notifyListenerIfDoneLoading();
+        notifyListener();
     }
 }

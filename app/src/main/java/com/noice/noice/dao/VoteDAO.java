@@ -1,7 +1,6 @@
 package com.noice.noice.dao;
 
-import android.os.Handler;
-import android.os.Looper;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -15,9 +14,6 @@ import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import bolts.Continuation;
-import bolts.Task;
 
 public class VoteDAO {
 
@@ -87,24 +83,7 @@ public class VoteDAO {
      * @param video video that we are getting votes for
      */
     public void updateVoteCounts(@NonNull Video video) {
-        ArrayList<Task<Integer>> tasks = new ArrayList<>();
-        tasks.add(createVoteTaskForValue(video, 1));
-        tasks.add(createVoteTaskForValue(video, -1));
-        Task.whenAllResult(tasks).onSuccess(new Continuation<List<Integer>, Object>() {
-            @Override
-            public Object then(final Task<List<Integer>> task) throws Exception {
-                for (final VoteListener listener : listeners) {
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            listener.onVoteCountsUpdated(task.getResult().get(0), task.getResult
-                                    ().get(1));
-                        }
-                    });
-                }
-                return null;
-            }
-        });
+        new GetVoteCountsTask(video, listeners).execute();
 
         // get user vote
         ParseQuery<Vote> query = ParseQuery.getQuery(Vote.class);
@@ -124,11 +103,43 @@ public class VoteDAO {
         });
     }
 
-    private Task<Integer> createVoteTaskForValue(Video video, int value) {
+    private int countVotesForValue(Video video, int value) {
         ParseQuery<Vote> query = ParseQuery.getQuery(Vote.class);
         query.whereEqualTo("video", video);
         query.whereEqualTo("value", value);
-        return query.countInBackground();
+        try {
+            return query.count();
+        } catch (ParseException e) {
+            return 0;
+        }
+    }
+
+    private class GetVoteCountsTask extends AsyncTask<Void, Void, Void> {
+
+        private int positiveCount = 0;
+        private int negativeCount = 0;
+        private Video mVideo;
+        private List<VoteListener> listeners;
+
+        public GetVoteCountsTask(Video video, List<VoteListener> listeners) {
+            mVideo = video;
+            this.listeners = listeners;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            positiveCount = countVotesForValue(mVideo, 1);
+            negativeCount = countVotesForValue(mVideo, -1);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            for (VoteListener listener : listeners) {
+                listener.onVoteCountsUpdated(positiveCount, negativeCount);
+            }
+        }
     }
 
 }

@@ -50,9 +50,6 @@ public class ShareDAO {
                     share.setVideo(video);
                     share.setACL(Share.createShareACL());
                     share.saveInBackground();
-                    for (ShareListener listener : listeners) {
-                        listener.onUserHasShared();
-                    }
                 }
             }
         });
