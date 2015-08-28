@@ -156,8 +156,15 @@ public class MainFragment extends Fragment implements VideoViewModel.VideoViewMo
             shareButton.setBackgroundResource(R.drawable.ic_blab_unselected);
             shareCountTextView.setTextColor(getResources().getColor(R.color.black));
         }
-        shareCountTextView.setText(getResources().getQuantityString(R.plurals.share_count,
-                mVideoViewModel.getShareCount(), mVideoViewModel.getShareCount()));
+    }
+
+    private void updateShareCount() {
+        if (mVideoViewModel.isShareLoaded()) {
+            shareCountTextView.setText(getResources().getQuantityString(R.plurals.share_count,
+                    mVideoViewModel.getShareCount(), mVideoViewModel.getShareCount()));
+        } else {
+            shareCountTextView.setText("");
+        }
     }
 
     private void updateLikeState() {
@@ -190,10 +197,17 @@ public class MainFragment extends Fragment implements VideoViewModel.VideoViewMo
     }
 
     private void updateVoteCountViews() {
-        positiveCountTextView.setText(getResources().getQuantityString(R.plurals.haha_count,
-                mVideoViewModel.getPositiveVoteCount(), mVideoViewModel.getPositiveVoteCount()));
-        negativeCountTextView.setText(getResources().getQuantityString(R.plurals.meh_count,
-                mVideoViewModel.getNegativeVoteCount(), mVideoViewModel.getNegativeVoteCount()));
+        if (mVideoViewModel.isVoteLoaded()) {
+            positiveCountTextView.setText(getResources().getQuantityString(R.plurals.haha_count,
+                    mVideoViewModel.getPositiveVoteCount(), mVideoViewModel.getPositiveVoteCount
+                            ()));
+            negativeCountTextView.setText(getResources().getQuantityString(R.plurals.meh_count,
+                    mVideoViewModel.getNegativeVoteCount(), mVideoViewModel.getNegativeVoteCount
+                            ()));
+        } else {
+            positiveCountTextView.setText("");
+            negativeCountTextView.setText("");
+        }
     }
 
     private void shareLink(Video video) {
@@ -228,5 +242,6 @@ public class MainFragment extends Fragment implements VideoViewModel.VideoViewMo
         updateLikeState();
         updateVoteCountViews();
         updateShareState();
+        updateShareCount();
     }
 }

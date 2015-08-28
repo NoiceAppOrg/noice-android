@@ -94,12 +94,12 @@ public class VideoViewModel implements VoteDAO.VoteListener, VideoDAO
     }
 
     public void getTodaysVideo() {
-        resetUserState();
+        resetState();
         mVideoDAO.getMostRecentInBackground();
     }
 
     public void getRandomVideo() {
-        resetUserState();
+        resetState();
         mVideoDAO.getRandomInBackground();
     }
 
@@ -148,9 +148,12 @@ public class VideoViewModel implements VoteDAO.VoteListener, VideoDAO
         listener.onVideoLoaded(this);
     }
 
-    private void resetUserState() {
+    private void resetState() {
         userVote = Vote.VOTE_NONE;
         hasShared = false;
+        isVideoLoaded = false;
+        isVoteLoaded = false;
+        isShareLoaded = false;
     }
 
     @Override
