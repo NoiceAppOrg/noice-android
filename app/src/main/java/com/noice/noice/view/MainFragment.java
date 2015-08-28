@@ -191,9 +191,9 @@ public class MainFragment extends Fragment implements VideoViewModel.VideoViewMo
 
     private void updateVoteCountViews() {
         positiveCountTextView.setText(getResources().getQuantityString(R.plurals.haha_count,
-                mVideoViewModel.getNegativeVoteCount(), mVideoViewModel.getPositiveVoteCount()));
+                mVideoViewModel.getPositiveVoteCount(), mVideoViewModel.getPositiveVoteCount()));
         negativeCountTextView.setText(getResources().getQuantityString(R.plurals.meh_count,
-                mVideoViewModel.getPositiveVoteCount(), mVideoViewModel.getNegativeVoteCount()));
+                mVideoViewModel.getNegativeVoteCount(), mVideoViewModel.getNegativeVoteCount()));
     }
 
     private void shareLink(Video video) {
