@@ -62,12 +62,10 @@ public class VideoPlayerFragment extends YouTubePlayerSupportFragment implements
     @Override
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player,
                                         boolean wasRestored) {
-        if (!wasRestored) {
-            youTubePlayer = player;
-            youTubePlayer.setPlaybackEventListener(this);
-            youTubePlayer.setPlayerStateChangeListener(this);
-            startVideo();
-        }
+        youTubePlayer = player;
+        youTubePlayer.setPlaybackEventListener(this);
+        youTubePlayer.setPlayerStateChangeListener(this);
+        startVideo();
     }
 
     @Override

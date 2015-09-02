@@ -14,9 +14,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.noice.noice.R;
+import com.noice.noice.metrics.TrackerConstants;
 import com.noice.noice.model.Video;
 import com.noice.noice.model.Vote;
 import com.noice.noice.view.model.VideoViewModel;
+import com.parse.ParseAnalytics;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -123,6 +125,7 @@ public class MainFragment extends Fragment implements VideoViewModel.VideoViewMo
             @Override
             public void onClick(View v) {
                 mVideoViewModel.getRandomVideo();
+                ParseAnalytics.trackEventInBackground(TrackerConstants.WATCH_ANOTHER);
             }
         });
     }
