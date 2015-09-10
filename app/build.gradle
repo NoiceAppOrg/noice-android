@@ -3,14 +3,14 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         release {
-            storeFile file("${NOICE_keystore}")
-            storePassword "${NOICE_keystore_password}"
-            keyAlias "${NOICE_key_alias}"
-            keyPassword "${NOICE_key_password}"
+            storeFile file("${project.hasProperty('NOICE_keystore') ? NOICE_keystore : ""}")
+            storePassword "${project.hasProperty('NOICE_keystore_password') ? NOICE_keystore_password : ""}"
+            keyAlias "${project.hasProperty('NOICE_key_alias') ? NOICE_key_alias : ""}"
+            keyPassword "${project.hasProperty('NOICE_key_password') ? NOICE_key_password : ""}"
         }
     }
     compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    buildToolsVersion '23.0.0'
     defaultConfig {
         applicationId "com.noice.noice"
         minSdkVersion 15
@@ -29,6 +29,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:22.0.0'
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'com.parse.bolts:bolts-android:1.+'
