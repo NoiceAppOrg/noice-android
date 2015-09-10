@@ -1,4 +1,4 @@
-# Noice for Android
+# Noice for Android [![Build Status](https://travis-ci.org/NoiceAppOrg/noice-android.svg)](https://travis-ci.org/NoiceAppOrg/noice-android)
 
 Welcome to the source code for the Android Noice project.  I think you'll find it pretty Noice :D
 
