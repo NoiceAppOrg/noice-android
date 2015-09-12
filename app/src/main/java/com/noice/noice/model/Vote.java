@@ -2,7 +2,6 @@ package com.noice.noice.model;
 
 import android.support.annotation.IntDef;
 
-import com.noice.noice.util.Utils;
 import com.parse.ParseACL;
 import com.parse.ParseClassName;
 import com.parse.ParseInstallation;
@@ -24,8 +23,12 @@ public class Vote extends ParseObject {
         ParseACL parseACL = new ParseACL();
         parseACL.setPublicWriteAccess(false);
         parseACL.setPublicReadAccess(true);
-        Utils.initUserIfNull();
-        parseACL.setWriteAccess(ParseUser.getCurrentUser(), true);
+        if (ParseUser.getCurrentUser() != null) {
+            //TODO this case should never be true since enableAutomaticUser is turned on
+            parseACL.setWriteAccess(ParseUser.getCurrentUser(), true);
+        } else {
+            parseACL.setPublicWriteAccess(true);
+        }
         return parseACL;
     }
 

@@ -15,8 +15,8 @@ android {
         applicationId "com.noice.noice"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 9
-        versionName "2.0.2"
+        versionCode 10
+        versionName "2.0.3"
         signingConfig signingConfigs.release
     }
     buildTypes {
